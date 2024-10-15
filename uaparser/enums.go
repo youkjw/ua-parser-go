@@ -35,6 +35,7 @@ const (
 	BLACKBERRY     = "BlackBerry"
 	BROWSER        = "Browser"
 	CHROME         = "Chrome"
+	CHROMECAST     = "Chromecast"
 	EDGE           = "Edge"
 	FIREFOX        = "Firefox"
 	GOOGLE         = "Google"
@@ -60,6 +61,7 @@ const (
 	HTC            = "HTC"
 	ACER           = "Acer"
 	MEIZU          = "Meizu"
+	TCL            = "TCL"
 )
 
 const (
@@ -95,4 +97,10 @@ var windowsVersionMap = map[string][]string{
 	"8.1":     {"NT 6.3"},
 	"10":      {"NT 6.4", "NT 10.0"},
 	"RT":      {"ARM"},
+}
+
+var wildcardsType = map[string]string{"*": "mobile"}
+
+var itelType = map[string][]string{
+	"tablet": {"p10001l", "w7001"},
 }

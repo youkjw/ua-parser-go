@@ -96,7 +96,17 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)(?:ms|\()(ie) ([\w\.]+)`),                                             // Internet Explorer
 			},
 			ComplexRegexps: []*regexp2.Regexp{
-				regexp2.MustCompile(`(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio)\/([-\w\.]+)`, regexp2.IgnoreCase), // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ//Vivaldi/DuckDuckGo/Klar
+				regexp2.MustCompile(`(flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|duckduckgo|klar|helio)\/([-\w\.]+)`, regexp2.IgnoreCase), // Rekonq/Puffin/Brave/Whale/QQBrowserLite/QQ//Vivaldi/DuckDuckGo/Klar
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)(heytap|ovi)browser\/([\d\.]+)`), // HeyTap/Ovi
+				regexp.MustCompile(`(?i)(weibo)__([\d\.]+)`),             // Weibo
 			},
 			Props: []*Property{
 				BuildProperty(Name),
@@ -110,16 +120,6 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Version),
 				BuildProperty(Name, "Quark"),
-			},
-		},
-		&Parser{
-			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)(heytap|ovi)browser\/([\d\.]+)`), // HeyTap/Ovi
-				regexp.MustCompile(`(?i)(weibo)__([\d\.]+)`),             // Weibo
-			},
-			Props: []*Property{
-				BuildProperty(Name),
-				BuildProperty(Version),
 			},
 		},
 		&Parser{
@@ -152,7 +152,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				BuildProperty(Name, "WeChat"),
 			},
 			ParsedCall: []parsedCall{
-				MakeMatchedCall(Version, windowsVersion),
+				MakeMatchedCall(Version, windowsVersionMapper),
 			},
 		},
 		&Parser{
@@ -668,9 +668,18 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 		},
 		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
+				regexp2.MustCompile(`\b((?:s[cgp]h|gt|sm)-(?![lr])\w+|sc[g-]?[\d]+a?|galaxy nexus)`, regexp2.IgnoreCase),
+				regexp2.MustCompile(`samsung[- ]((?!sm-[lr])[-\w]+)`, regexp2.IgnoreCase),
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, SAMSUNG),
+				BuildProperty(Type, MOBILE),
+			},
+		},
+		&Parser{
 			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)\b((?:s[cgp]h|gt|sm)-\w+|sc[g-]?[\d]+a?|galaxy nexus)`),
-				regexp.MustCompile(`(?i)samsung[- ]([-\w]+)`),
 				regexp.MustCompile(`(?i)sec-(sgh\w+)`),
 			},
 			Props: []*Property{
@@ -732,8 +741,8 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 			Props: []*Property{
 				BuildProperty(Model),
-				BuildProperty(Vendor, SHARP),
-				BuildProperty(Type, MOBILE),
+				BuildProperty(Vendor, HUAWEI),
+				BuildProperty(Type, TABLET),
 			},
 		},
 		&Parser{
@@ -745,7 +754,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 			Props: []*Property{
 				BuildProperty(Model),
-				BuildProperty(Vendor, SHARP),
+				BuildProperty(Vendor, HUAWEI),
 				BuildProperty(Type, MOBILE),
 			},
 		},
@@ -753,11 +762,11 @@ var rgxMaps = map[UaItemType][]*Parser{
 		// Xiaomi
 		&Parser{
 			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))`),                                                       // Xiaomi POCO
-				regexp.MustCompile(`(?i)\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui`),                                                                  // Xiaomi Hongmi
-				regexp.MustCompile(`(?i)\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))`),                                                        // Xiaomi Redmi
-				regexp.MustCompile(`(?i)oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))`),                                             // Xiaomi Redmi 'numeric' models
-				regexp.MustCompile(`(?i)\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))`), // Xiaomi Mi 				// Xiaomi Hongmi 'numeric' models
+				regexp.MustCompile(`(?i)\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))`),                                                           // Xiaomi POCO
+				regexp.MustCompile(`(?i)\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui`),                                                                      // Xiaomi Hongmi
+				regexp.MustCompile(`(?i)\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))`),                                                            // Xiaomi Redmi
+				regexp.MustCompile(`(?i)oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))`),                                                 // Xiaomi Redmi 'numeric' models
+				regexp.MustCompile(`(?i)\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite|pro)?)(?: bui|\))`), // Xiaomi Mi 				// Xiaomi Hongmi 'numeric' models
 			},
 			ComplexRegexps: []*regexp2.Regexp{
 				regexp2.MustCompile(`\b; (\w+) build\/hm\1`, regexp2.IgnoreCase), // Xiaomi Hongmi 'numeric' models
@@ -966,10 +975,19 @@ var rgxMaps = map[UaItemType][]*Parser{
 
 		// Amazon
 		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
+				regexp2.MustCompile(`(kf[a-z]{2}wi|aeo(?!bc)\w\w)( bui|\))`, regexp2.IgnoreCase), // Kindle Fire without Silk / Echo Show
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, AMAZON),
+				BuildProperty(Type, MOBILE),
+			},
+		},
+		&Parser{
 			Regexps: []*regexp.Regexp{
 				regexp.MustCompile(`(?i)(alexa)webm`),
-				regexp.MustCompile(`(?i)(kf[a-z]{2}wi|aeo[c-r]{2})( bui|\))`), // Kindle Fire without Silk / Echo Show
-				regexp.MustCompile(`(?i)(kf[a-z]+)( bui|\)).+silk\/`),         // Kindle Fire HD
+				regexp.MustCompile(`(?i)(kf[a-z]+)( bui|\)).+silk\/`), // Kindle Fire HD
 			},
 			Props: []*Property{
 				BuildProperty(Model),
@@ -1059,6 +1077,45 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 		},
 
+		// tcl
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)tcl (xess p17aa)`),
+				regexp.MustCompile(`(?i)droid [\w\.]+; ((?:8[14]9[16]|9(?:0(?:48|60|8[01])|1(?:3[27]|66)|2(?:6[69]|9[56])|466))[gqswx])(_\w(\w|\w\w))?(\)| bui)`),
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, TCL),
+				BuildProperty(Type, TABLET),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)droid [\w\.]+; (418(?:7d|8v)|5087z|5102l|61(?:02[dh]|25[adfh]|27[ai]|56[dh]|59k|65[ah])|a509dl|t(?:43(?:0w|1[adepqu])|50(?:6d|7[adju])|6(?:09dl|10k|12b|71[efho]|76[hjk])|7(?:66[ahju]|67[hw]|7[045][bh]|71[hk]|73o|76[ho]|79w|81[hks]?|82h|90[bhsy]|99b)|810[hs]))(_\w(\w|\w\w))?(\)| bui)`),
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, TCL),
+				BuildProperty(Type, MOBILE),
+			},
+		},
+
+		// itel
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)(itel) ((\w+))`),
+			},
+			Props: []*Property{
+				BuildProperty(Vendor),
+				BuildProperty(Model),
+				BuildProperty(Type),
+			},
+			ParsedCall: []parsedCall{
+				MakeMatchedCall(Vendor, strings.ToLower),
+				MakeMatchedCall(Type, itelTypeMapper),
+			},
+		},
+
 		// Acer
 		&Parser{
 			Regexps: []*regexp.Regexp{
@@ -1096,7 +1153,29 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 		},
 
+		// Nothing
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)droid.+; (a(?:015|06[35]|142p?))`),
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, "Nothing"),
+				BuildProperty(Type, MOBILE),
+			},
+		},
+
 		// MIXED
+		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
+				regexp2.MustCompile(`(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)`, regexp2.IgnoreCase), // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron
+			},
+			Props: []*Property{
+				BuildProperty(Vendor),
+				BuildProperty(Model),
+				BuildProperty(Type, MOBILE),
+			},
+		},
 		&Parser{
 			Regexps: []*regexp.Regexp{
 				regexp.MustCompile(`(?i)(hp) ([\w ]+\w)`),            // HP iPAQ
@@ -1105,9 +1184,6 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)(lenovo)[-_ ]?([-\w]+)`),     // Lenovo
 				regexp.MustCompile(`(?i)(jolla)`),                    // Jolla
 				regexp.MustCompile(`(?i)(oppo) ?([\w ]+) bui`),       // OPPO
-			},
-			ComplexRegexps: []*regexp2.Regexp{
-				regexp2.MustCompile(`(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)`, regexp2.IgnoreCase), // BlackBerry/BenQ/Palm/Sony-Ericsson/Acer/Asus/Dell/Meizu/Motorola/Polytron
 			},
 			Props: []*Property{
 				BuildProperty(Vendor),
@@ -1255,10 +1331,40 @@ var rgxMaps = map[UaItemType][]*Parser{
 		},
 		&Parser{
 			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)crkey`), // Google Chromecast
+				regexp.MustCompile(`(?i)crkey.*devicetype\/chromecast`), // Google Chromecast Third Generation
 			},
 			Props: []*Property{
-				BuildProperty(Model, CHROME+"case"),
+				BuildProperty(Model, CHROMECAST+" Third Generation"),
+				BuildProperty(Vendor, GOOGLE),
+				BuildProperty(Type, SMARTTV),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)crkey.*devicetype\/([^/]*)`), // Google Chromecast with specific device type
+			},
+			Props: []*Property{
+				BuildProperty(Model, "^", "Chromecast "),
+				BuildProperty(Vendor, GOOGLE),
+				BuildProperty(Type, SMARTTV),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)fuchsia.*crkey`), // Google Chromecast Nest Hub
+			},
+			Props: []*Property{
+				BuildProperty(Model, CHROMECAST+" Nest Hub"),
+				BuildProperty(Vendor, GOOGLE),
+				BuildProperty(Type, SMARTTV),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)crkey`), // Google Chromecast, Linux-based or unknown
+			},
+			Props: []*Property{
+				BuildProperty(Model, CHROMECAST),
 				BuildProperty(Vendor, GOOGLE),
 				BuildProperty(Type, SMARTTV),
 			},
@@ -1389,6 +1495,16 @@ var rgxMaps = map[UaItemType][]*Parser{
 
 		&Parser{
 			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)\b(sm-[lr]\d\d[05][fnuw]?s?)`), // Samsung Galaxy Watch
+			},
+			Props: []*Property{
+				BuildProperty(Model),
+				BuildProperty(Vendor, SAMSUNG),
+				BuildProperty(Type, WEARABLE),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
 				regexp.MustCompile(`(?i)((pebble))app`), // Pebble
 			},
 			Props: []*Property{
@@ -1428,6 +1544,16 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Model),
 				BuildProperty(Vendor, GOOGLE),
+				BuildProperty(Type, XR),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)(pico) (4|neo3(?: link|pro)?)`), // Pico
+			},
+			Props: []*Property{
+				BuildProperty(Vendor),
+				BuildProperty(Model),
 				BuildProperty(Type, XR),
 			},
 		},
@@ -1502,7 +1628,6 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp2.MustCompile(`(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))`, regexp2.IgnoreCase), // Unidentifiable Mobile
 			},
 			Props: []*Property{
-				BuildProperty(Model),
 				BuildProperty(Type, MOBILE),
 			},
 		},
@@ -1579,7 +1704,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				BuildProperty(Version),
 			},
 			ParsedCall: []parsedCall{
-				MakeMatchedCall(Version, windowsVersion),
+				MakeMatchedCall(Version, windowsVersionMapper),
 			},
 		},
 		&Parser{
@@ -1595,7 +1720,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				BuildProperty(Name, WINDOWS),
 			},
 			ParsedCall: []parsedCall{
-				MakeMatchedCall(Version, windowsVersion),
+				MakeMatchedCall(Version, windowsVersionMapper),
 			},
 		},
 
@@ -1621,6 +1746,53 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Name, "macOS"),
 				BuildProperty(Version, "_", "."),
+			},
+		},
+
+		// Google Chromecast
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)android ([\d\.]+).*crkey`), // Google Chromecast, Android-based
+			},
+			Props: []*Property{
+				BuildProperty(Version),
+				BuildProperty(Name, CHROMECAST+" Android"),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)fuchsia.*crkey\/([\d\.]+)`), // Google Chromecast, Fuchsia-based
+			},
+			Props: []*Property{
+				BuildProperty(Version),
+				BuildProperty(Name, CHROMECAST+" Fuchsia"),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)crkey\/([\d\.]+).*devicetype\/smartspeaker`), // Google Chromecast, Linux-based Smart Speaker
+			},
+			Props: []*Property{
+				BuildProperty(Version),
+				BuildProperty(Name, CHROMECAST+" SmartSpeaker"),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)linux.*crkey\/([\d\.]+)`), // Google Chromecast, Legacy Linux-based
+			},
+			Props: []*Property{
+				BuildProperty(Version),
+				BuildProperty(Name, CHROMECAST+" Linux"),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)crkey\/([\d\.]+)`), // Google Chromecast, Legacy Linux-based
+			},
+			Props: []*Property{
+				BuildProperty(Version),
+				BuildProperty(Name, CHROMECAST),
 			},
 		},
 
@@ -1702,16 +1874,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 			},
 		},
 
-		// Google Chromecast
-		&Parser{
-			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)crkey\/([\d\.]+)`), // Google Chromecast
-			},
-			Props: []*Property{
-				BuildProperty(Version),
-				BuildProperty(Name, CHROME+"cast"),
-			},
-		},
+		// Google ChromeOS
 		&Parser{
 			Regexps: []*regexp.Regexp{
 				regexp.MustCompile(`(?i)(cros) [\w]+(?:\)| ([\w\.]+)\b)`), // Chromium OS
@@ -1731,6 +1894,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				// Console
 				regexp.MustCompile(`(?i)(nintendo|playstation) (\w+)`), // Nintendo/Playstation
 				regexp.MustCompile(`(?i)(xbox); +xbox ([^\);]+)`),      // Microsoft Xbox (360, One, X, S, Series X, Series S)
+				regexp.MustCompile(`(?i)(pico) .+os([\w\.]+)`),         // Pico
 				// Other
 				regexp.MustCompile(`(?i)\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)`), // Joli/Palm
 				regexp.MustCompile(`(?i)(mint)[\/\(\) ]?(\w*)`),                // Mint

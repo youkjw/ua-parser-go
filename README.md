@@ -1,5 +1,5 @@
 # ua-parser-go
-Go language version of ua-parser-js
+Go language version of ua-parser
 
 ## Installing
 This is a go-gettable library, so install is easy:

@@ -29,7 +29,7 @@ func extract(target any, source map[string]string) {
 }
 
 func trim(value string) string {
-	reg := regexp.MustCompile(`\\?\"`)
+	reg := regexp.MustCompile(`^\s\s*`)
 	value = reg.ReplaceAllString(value, Empty)
 	if len(value) > UaMaxLength {
 		return value[:UaMaxLength]
@@ -49,13 +49,23 @@ func oldSafariBrowser(b []byte) string {
 	return version
 }
 
-func windowsVersion(value string) string {
+func windowsVersionMapper(value string) string {
 	for k, v := range windowsVersionMap {
 		if has(v, value) {
 			return k
 		}
 	}
 	return value
+}
+
+func itelTypeMapper(value string) string {
+	for k, v := range itelType {
+		if has(v, value) {
+			return k
+		}
+	}
+
+	return wildcardsType["*"]
 }
 
 func has(s []string, v string) bool {
