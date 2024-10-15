@@ -1,6 +1,6 @@
 module github.com/youkjw/ua-parser-go
 
-go 1.21.5
+go 1.18
 
 require (
 	github.com/dlclark/regexp2 v1.11.4
