@@ -56,4 +56,4 @@ fmt.Println(res.String()) // {"ua":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWeb
 
 ## Thinks
 
-- [ua-parser-js](https://github.com/faisalman/ua-parser-js): UAParser.js
+- [ua-parser-js](https://github.com/faisalman/ua-parser-js): UAParser.js - The Essential Web Development Tool for User-Agent Detection
