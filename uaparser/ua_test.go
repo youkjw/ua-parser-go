@@ -38,7 +38,7 @@ var testTable = []string{
 	// quarkpc
 	//"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/112.0.0.0 safari/537.36 quarkpc/1.5.5.75",
 	//
-	"Mozilla/5.0 (Linux; Android 12; T771K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36 EdgA/114.0.1823.37",
+	"Mozilla/5.0 (Tablet; rv:26.0) Gecko/26.0 Firefox/26.0",
 }
 
 func TestParse(t *testing.T) {

@@ -981,7 +981,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Model),
 				BuildProperty(Vendor, AMAZON),
-				BuildProperty(Type, MOBILE),
+				BuildProperty(Type, TABLET),
 			},
 		},
 		&Parser{
@@ -992,7 +992,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Model),
 				BuildProperty(Vendor, AMAZON),
-				BuildProperty(Type, MOBILE),
+				BuildProperty(Type, TABLET),
 			},
 		},
 		&Parser{
@@ -1071,7 +1071,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp2.MustCompile(`(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)`, regexp2.IgnoreCase), // Alcatel/GeeksPhone/Nexian/Panasonic/Sony
 			},
 			Props: []*Property{
-				BuildProperty(Vendor, HTC),
+				BuildProperty(Vendor),
 				BuildProperty(Model, "_", " "),
 				BuildProperty(Type, MOBILE),
 			},
@@ -1203,7 +1203,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 			Props: []*Property{
 				BuildProperty(Vendor),
 				BuildProperty(Model),
-				BuildProperty(Type, MOBILE),
+				BuildProperty(Type, TABLET),
 			},
 		},
 		&Parser{
@@ -1286,7 +1286,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)smart-tv.+(samsung)`), // Samsung
 			},
 			Props: []*Property{
-				BuildProperty(Vendor, ZEBRA),
+				BuildProperty(Vendor),
 				BuildProperty(Type, SMARTTV),
 			},
 		},
@@ -1449,8 +1449,8 @@ var rgxMaps = map[UaItemType][]*Parser{
 		///////////////////
 		&Parser{
 			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)(ouya)`),       // Ouya
-				regexp.MustCompile(`(nintendo) (\w+)`), // Nintendo
+				regexp.MustCompile(`(?i)(ouya)`),           // Ouya
+				regexp.MustCompile(`(?i)(nintendo) (\w+)`), // Nintendo
 			},
 			Props: []*Property{
 				BuildProperty(Vendor),
@@ -1559,7 +1559,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 		},
 		&Parser{
 			Regexps: []*regexp.Regexp{
-				regexp.MustCompile(`(?i)(quest( \d| pro)?)`), // Oculus Quest
+				regexp.MustCompile(`(?i); (quest( \d| pro)?)`), // Oculus Quest
 			},
 			Props: []*Property{
 				BuildProperty(Model),
@@ -1619,7 +1619,6 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp2.MustCompile(`\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))`, regexp2.IgnoreCase), // Unidentifiable Tablet
 			},
 			Props: []*Property{
-				BuildProperty(Model),
 				BuildProperty(Type, TABLET),
 			},
 		},
