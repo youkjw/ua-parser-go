@@ -72,7 +72,7 @@ func has(s []string, v string) bool {
 	v = strings.ToLower(v)
 
 	for _, sval := range s {
-		if strings.Contains(strings.ToLower(sval), v) {
+		if strings.Contains(v, strings.ToLower(sval)) {
 			return true
 		}
 	}

@@ -600,7 +600,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)\b(aarch64|arm(v?8e?l?|_?64))\b`), // ARM64
 			},
 			Props: []*Property{
-				BuildProperty(Architecture, "armhf"),
+				BuildProperty(Architecture, "arm64"),
 			},
 		},
 		&Parser{
@@ -608,7 +608,7 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)\b(arm(?:v[67])?ht?n?[fl]p?)\b`), // ARMHF
 			},
 			Props: []*Property{
-				BuildProperty(Architecture, "arm64"),
+				BuildProperty(Architecture, "armhf"),
 			},
 		},
 		&Parser{
@@ -1898,14 +1898,41 @@ var rgxMaps = map[UaItemType][]*Parser{
 				regexp.MustCompile(`(?i)\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)`), // Joli/Palm
 				regexp.MustCompile(`(?i)(mint)[\/\(\) ]?(\w*)`),                // Mint
 				regexp.MustCompile(`(?i)(mageia|vectorlinux)[; ]`),             // Mageia/VectorLinux
-				regexp.MustCompile(`(?i)(hurd|linux) ?([\w\.]*)`),              // Hurd/Linux
-				regexp.MustCompile(`(?i)(gnu) ?([\w\.]*)`),                     // GNU
 				regexp.MustCompile(`(?i)(haiku) (\w+)`),                        // Haiku
 
 			},
 			ComplexRegexps: []*regexp2.Regexp{
 				regexp2.MustCompile(`([kxln]?ubuntu|debian|suse|opensuse|gentoo|arch(?= linux)|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire)(?: gnu\/linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)`, regexp2.IgnoreCase), // Ubuntu/Debian/SUSE/Gentoo/Arch/Slackware/Fedora/Mandriva/CentOS/PCLinuxOS/RedHat/Zenwalk/Linpus/Raspbian/Plan9/Minix/RISCOS/Contiki/Deepin/Manjaro/elementary/Sabayon/Linspire
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)(hurd|linux) ?([\w\.]*)`), // Hurd/Linux
+				regexp.MustCompile(`(?i)(gnu) ?([\w\.]*)`),        // GNU
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+			},
+		},
+		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
 				regexp2.MustCompile(`\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)`, regexp2.IgnoreCase), // FreeBSD/NetBSD/OpenBSD/PC-BSD/GhostBSD/DragonFly
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+			},
+		},
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				// Other
+				regexp.MustCompile(`(?i)(haiku) (\w+)`), // Haiku
+
 			},
 			Props: []*Property{
 				BuildProperty(Name),
