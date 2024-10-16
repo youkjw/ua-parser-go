@@ -4,7 +4,7 @@ Go language version of ua-parser
 ## Installing
 This is a go-gettable library, so install is easy:
 
-    go get github.com/youkjw/ua-parser-go@latest
+    go get github.com/youkjw/ua-parser-go
 
 # Usage
 

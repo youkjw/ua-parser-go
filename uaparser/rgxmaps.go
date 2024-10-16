@@ -1964,3 +1964,109 @@ var rgxMaps = map[UaItemType][]*Parser{
 		},
 	},
 }
+
+var rgxExtensionCli = map[UaItemType][]*Parser{
+	UaBrowser: {
+		// CLIs
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				regexp.MustCompile(`(?i)(wget|curl|lynx)[\/ ]([\w\.]+)`), // wget / curl / lynx
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+				BuildProperty(Type, CLI),
+			},
+		},
+	},
+}
+
+var rgxCrawlersExtensions = map[UaItemType][]*Parser{
+	UaBrowser: {
+		// Crawlers
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				// AhrefsBot - https://ahrefs.com/robot
+				// Amazonbot - https://developer.amazon.com/amazonbot
+				// Applebot - http://apple.com/go/applebot
+				// Bingbot - http://www.bing.com/bingbot.htm
+				// Dotbot - https://moz.com/help/moz-procedures/crawlers/dotbot
+				// DuckDuckBot - http://duckduckgo.com/duckduckbot.html
+				// FacebookBot - https://developers.facebook.com/docs/sharing/bot/
+				// GPTBot - https://platform.openai.com/docs/gptbot
+				// MJ12bot - https://mj12bot.com/
+				// OpenAI Search - https://platform.openai.com/docs/bots
+				// SemrushBot - http://www.semrush.com/bot.html
+				regexp.MustCompile(`(?i)((?:ahrefs|amazon|apple|bing|dot|duckduck|facebook|gpt|mj12|oai-search|semrush)bot)\/([\w\.]+)`),
+				// Baiduspider https://help.baidu.com/question?prod_id=99&class=0&id=3001
+				regexp.MustCompile(`(?i)(baiduspider)[-imagevdonsfcpr]{0,6}\/([\w\.]+)`),
+				// ClaudeBot
+				regexp.MustCompile(`(?i)(claude(?:bot|-web))\/([\w\.]+)`),
+				// Coc Coc Bot - https://help.coccoc.com/en/search-engine
+				regexp.MustCompile(`(?i)(coccocbot-(?:image|web))\/([\w\.]+)`),
+				// Googlebot - http://www.google.com/bot.html
+				regexp.MustCompile(`(?i)(google(?:bot|other)(?:-image|-video|-news|-extended)?|(?:storebot-)?google(?:-inspectiontool))\/?([\w\.]*)`),
+				// Sogou Spider
+				regexp.MustCompile(`(?i)(sogou (?:pic|head|web|orion|news) spider)\/([\w\.]+)`),
+				// Yahoo! Japan - https://support.yahoo-net.jp/PccSearch/s/article/H000007955
+				regexp.MustCompile(`(?i)(y!?j-(?:asr|br[uw]|dscv|mmp|vsidx|wsc))\/([\w\.]+)`),
+				// Yandex Bots - https://yandex.com/bots
+				regexp.MustCompile(`(?i)(yandex(?:(?:mobile)?(?:accessibility|additional|renderresources|screenshot|sprav)?bot|image(?:s|resizer)|video(?:parser)?|blogs|adnet|favicons|fordomain|market|media|metrika|news|ontodb(?:api)?|pagechecker|partner|rca|tracker|turbo|vertis|webmaster|antivirus))\/([\w\.]+)`),
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+				BuildProperty(Type, CRAWLER),
+			},
+		},
+		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
+				// Bytespider
+				// Yahoo! Slurp - http://help.yahoo.com/help/us/ysearch/slurp
+				regexp2.MustCompile(`((?:bytespider|(?=yahoo! )slurp))`, regexp2.IgnoreCase),
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Type, CRAWLER),
+			},
+		},
+	},
+}
+
+var rgxFetchersExtensions = map[UaItemType][]*Parser{
+	UaBrowser: {
+		// Fetchers
+		&Parser{
+			Regexps: []*regexp.Regexp{
+				// AhrefsSiteAudit - https://ahrefs.com/robot/site-audit
+				// ChatGPT-User - https://platform.openai.com/docs/plugins/bot
+				// BingPreview / Mastodon / Pinterestbot / Redditbot / Rogerbot / Telegrambot / Twitterbot / UptimeRobot
+				regexp.MustCompile(`(?i)(ahrefssiteaudit|bingpreview|chatgpt-user|mastodon|(?:discord|linkedin|pinterest|reddit|roger|telegram|twitter|uptimero)bot)\/([\w\.]+)`),
+				// Slackbot - https://api.slack.com/robots
+				regexp.MustCompile(`(?i)(slack(?:bot)?(?:-imgproxy|-linkexpanding)?) ([\w\.]+)`),
+				// WhatsApp
+				regexp.MustCompile(`(?i)(whatsapp)\/([\w\.]+)[\/ ][ianw]`),
+				// Yahoo! Japan
+				regexp.MustCompile(`(?i)(y!?j-dlc)\/([\w\.]+)`),
+				// Yandex Bots - https://yandex.com/bots
+				regexp.MustCompile(`(?i)(yandex(?:calendar|direct(?:dyn)?|searchshop)|yadirectfetcher)\/([\w\.]+)`),
+				regexp.MustCompile(`(?i)(yandex(?:sitelinks|userproxy))`),
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Version),
+				BuildProperty(Type, FETCHER),
+			},
+		},
+		&Parser{
+			ComplexRegexps: []*regexp2.Regexp{
+				// Slackbot - https://api.slack.com/robots
+				regexp2.MustCompile(`(feedfetcher-google|google-read-aloud|(?=bot; )snapchat)`, regexp2.IgnoreCase),
+			},
+			Props: []*Property{
+				BuildProperty(Name),
+				BuildProperty(Type, FETCHER),
+			},
+		},
+	},
+}

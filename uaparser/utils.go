@@ -10,7 +10,7 @@ func extract(target any, source map[string]string) {
 	targetType := reflect.TypeOf(target).Elem()
 	targetValue := reflect.ValueOf(target).Elem()
 	for i := 0; i < targetType.NumField(); i++ {
-		var tag = targetType.Field(i).Tag.Get("json")
+		var tag = targetType.Field(i).Tag.Get("field")
 		v := targetValue.Field(i)
 		switch v.Kind() {
 		case reflect.Struct:

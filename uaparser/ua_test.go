@@ -7,6 +7,17 @@ import (
 	"testing"
 )
 
+func TestAll(t *testing.T) {
+	TestBrowser(t)
+	TestCpu(t)
+	TestEngine(t)
+	TestDevice(t)
+	TestOs(t)
+	TestCli(t)
+	TestCrawlers(t)
+	TestFetchers(t)
+}
+
 var testTable = []string{
 	// wechat
 	//"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63030522)",
@@ -38,7 +49,7 @@ var testTable = []string{
 	// quarkpc
 	//"mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/112.0.0.0 safari/537.36 quarkpc/1.5.5.75",
 	//
-	"Mozilla/5.0 (ZTE-E_N72/N72V1.0.0B02;U;Windows Mobile/6.1;Profile/MIDP-2.0 Configuration/CLDC-1.1;320*240;CTC/2.0) IE/6.0 (compatible; MSIE 4.01; Windows CE; PPC)/UC Browser7.7.1.88",
+	"Mozilla/5.0 (Linux; Android 11; 21061119AG Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 trill_2022109040 JsSdk/1.0 NetType/MOBILE Channel/googleplay AppName/musical_ly app_version/21.9.4 ByteLocale/ru-RU ByteFullLocale/ru-RU Region/KG BytedanceWebview/d8a21c6",
 }
 
 func TestParse(t *testing.T) {
@@ -54,7 +65,7 @@ func TestParse(t *testing.T) {
 	//wait.Wait()
 
 	for _, testUa := range testTable {
-		info := ParseOS(testUa)
+		info := Parse(testUa, SetExtensions([]string{CRAWLER}))
 		fmt.Println(info)
 	}
 
@@ -8597,6 +8608,364 @@ func TestOs(t *testing.T) {
 			fmt.Println(uacase.Ua)
 		}
 		if !assert.Equal(t, uacase.Expect.Version, u.GetOS().Version) {
+			fmt.Println(uacase.Ua)
+		}
+	}
+}
+
+var testCli = []byte(`
+[
+    {
+        "desc"    : "curl",
+        "ua"      : "curl/7.38.0",
+        "expect"  :
+        {
+            "name"    : "curl",
+            "version" : "7.38.0",
+            "type"    : "cli"
+        }
+    },
+    {
+        "desc"    : "lynx",
+        "ua"      : "Lynx 2.8.8dev.3",
+        "expect"  :
+        {
+            "name"    : "Lynx",
+            "version" : "2.8.8dev.3",
+            "type"    : "cli"
+        }
+    },
+    {
+        "desc"    : "lynx",
+        "ua"      : "Lynx/2.6",
+        "expect"  :
+        {
+            "name"    : "Lynx",
+            "version" : "2.6",
+            "type"    : "cli"
+        }
+    },
+    {
+        "desc"    : "wget",
+        "ua"      : "Wget/1.21.1",
+        "expect"  :
+        {
+            "name"    : "Wget",
+            "version" : "1.21.1",
+            "type"    : "cli"
+        }
+    }
+]
+`)
+
+type CliCase struct {
+	Desc   string `json:"desc"`
+	Ua     string `json:"ua"`
+	Expect struct {
+		Name    string `json:"name"`
+		Version string `json:"version"`
+		Type    string `json:"type"`
+	} `json:"expect"`
+}
+
+func TestCli(t *testing.T) {
+	var cliCases []CliCase
+	_ = json.Unmarshal(testCli, &cliCases)
+	for _, uacase := range cliCases {
+		u := Parse(uacase.Ua, SetExtensions([]string{CLI}))
+
+		if !assert.Equal(t, uacase.Expect.Name, u.GetBrowser().Name) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Version, u.GetBrowser().Version) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Type, u.GetBrowser().Type) {
+			fmt.Println(uacase.Ua)
+		}
+	}
+}
+
+var testCrawlers = []byte(`
+[
+    {
+        "desc"    : "AhrefsBot",
+        "ua"      : "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+        "expect"  :
+        {
+            "name"    : "AhrefsBot",
+            "version" : "7.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Applebot",
+        "ua"      : "Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B410 Safari/600.1.4 (Applebot/0.1;+http://www.apple.com/go/applebot)",
+        "expect"  :
+        {
+            "name"    : "Applebot",
+            "version" : "0.1",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Amazonbot",
+        "ua"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot)",
+        "expect"  :
+        {
+            "name"    : "Amazonbot",
+            "version" : "0.1",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Bytespider",
+        "ua"      : "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.1511.1269 Mobile Safari/537.36; Bytespider",
+        "expect"  :
+        {
+            "name"    : "Bytespider",
+            "version" : "",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "ClaudeBot",
+        "ua"      : "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)",
+        "expect"  :
+        {
+            "name"    : "ClaudeBot",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Coc Coc Bot (web)",
+        "ua"      : "Mozilla/5.0 (compatible; coccocbot-web/1.0; +http://help.coccoc.com/searchengine)",
+        "expect"  :
+        {
+            "name"    : "coccocbot-web",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Coc Coc Bot (image)",
+        "ua"      : "Mozilla/5.0 (compatible; coccocbot-image/1.0; +http://help.coccoc.com/searchengine)",
+        "expect"  :
+        {
+            "name"    : "coccocbot-image",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "ClaudeWeb",
+        "ua"      : "Claude-Web/1.0 (web crawler; +https://www.anthropic.com/; bots@anthropic.com)",
+        "expect"  :
+        {
+            "name"    : "Claude-Web",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Dotbot",
+        "ua"      : "Mozilla/5.0 (compatible; DotBot/1.2; +https://opensiteexplorer.org/dotbot; help@moz.com)",
+        "expect"  :
+        {
+            "name"    : "DotBot",
+            "version" : "1.2",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "FacebookBot",
+        "ua"      : "Mozilla/5.0 (compatible; FacebookBot/1.0; +https://developers.facebook.com/docs/sharing/webmasters/facebookbot/",
+        "expect"  :
+        {
+            "name"    : "FacebookBot",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Googlebot-Video",
+        "ua"      : "Googlebot-Video/1.0",
+        "expect"  :
+        {
+            "name"    : "Googlebot-Video",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "GPTBot",
+        "ua"      : "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.0; +https://openai.com/gptbot)",
+        "expect"  :
+        {
+            "name"    : "GPTBot",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "MJ12bot",
+        "ua"      : "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)",
+        "expect"  :
+        {
+            "name"    : "MJ12bot",
+            "version" : "v1.4.8",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "OpenAI Search",
+        "ua"      : "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot",
+        "expect"  :
+        {
+            "name"    : "OAI-SearchBot",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "SemrushBot",
+        "ua"      : "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+        "expect"  :
+        {
+            "name"    : "SemrushBot",
+            "version" : "7",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "Yahoo! Japan",
+        "ua"      : "Y!J-BRW/1.0 (https://www.yahoo-help.jp/app/answers/detail/p/595/a_id/42716)",
+        "expect"  :
+        {
+            "name"    : "Y!J-BRW",
+            "version" : "1.0",
+            "type"    : "crawler"
+        }
+    },
+    {
+        "desc"    : "YandexBot",
+        "ua"      : "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+        "expect"  :
+        {
+            "name"    : "YandexBot",
+            "version" : "3.0",
+            "type"    : "crawler"
+        }
+    }
+]
+`)
+
+type CrawlersCase struct {
+	Desc   string `json:"desc"`
+	Ua     string `json:"ua"`
+	Expect struct {
+		Name    string `json:"name"`
+		Version string `json:"version"`
+		Type    string `json:"type"`
+	} `json:"expect"`
+}
+
+func TestCrawlers(t *testing.T) {
+	var crawlersCases []CrawlersCase
+	_ = json.Unmarshal(testCrawlers, &crawlersCases)
+	for _, uacase := range crawlersCases {
+		u := Parse(uacase.Ua, SetExtensions([]string{CRAWLER}))
+
+		if !assert.Equal(t, uacase.Expect.Name, u.GetBrowser().Name) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Version, u.GetBrowser().Version) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Type, u.GetBrowser().Type) {
+			fmt.Println(uacase.Ua)
+		}
+	}
+}
+
+var testFetchers = []byte(`
+[
+    {
+        "desc"    : "AhrefsSiteAudit",
+        "ua"      : "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.128 Mobile Safari/537.36 (compatible; AhrefsSiteAudit/6.1; +http://ahrefs.com/robot/site-audit)",
+        "expect"  :
+        {
+            "name"    : "AhrefsSiteAudit",
+            "version" : "6.1",
+            "type"    : "fetcher"
+        }
+    },
+    {
+        "desc"    : "BingPreview",
+        "ua"      : "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534+ (KHTML, like Gecko) BingPreview/1.0b",
+        "expect"  :
+        {
+            "name"    : "BingPreview",
+            "version" : "1.0b",
+            "type"    : "fetcher"
+        }
+    },
+    {
+        "desc"    : "ChatGPT-User",
+        "ua"      : "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+        "expect"  :
+        {
+            "name"    : "ChatGPT-User",
+            "version" : "1.0",
+            "type"    : "fetcher"
+        }
+    },
+    {
+        "desc"    : "Rogerbot",
+        "ua"      : "Mozilla/5.0 (compatible; rogerBot/1.0; UrlCrawler; http://www.seomoz.org/dp/rogerbot)",
+        "expect"  :
+        {
+            "name"    : "rogerBot",
+            "version" : "1.0",
+            "type"    : "fetcher"
+        }
+    },
+    {
+        "desc"    : "UptimeRobot",
+        "ua"      : "Mozilla/5.0 (compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)",
+        "expect"  :
+        {
+            "name"    : "UptimeRobot",
+            "version" : "2.0",
+            "type"    : "fetcher"
+        }
+    }
+]`)
+
+type FetchersCase struct {
+	Desc   string `json:"desc"`
+	Ua     string `json:"ua"`
+	Expect struct {
+		Name    string `json:"name"`
+		Version string `json:"version"`
+		Type    string `json:"type"`
+	} `json:"expect"`
+}
+
+func TestFetchers(t *testing.T) {
+	var fetchersCases []FetchersCase
+	_ = json.Unmarshal(testFetchers, &fetchersCases)
+	for _, uacase := range fetchersCases {
+		u := Parse(uacase.Ua, SetExtensions([]string{FETCHER}))
+
+		if !assert.Equal(t, uacase.Expect.Name, u.GetBrowser().Name) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Version, u.GetBrowser().Version) {
+			fmt.Println(uacase.Ua)
+		}
+		if !assert.Equal(t, uacase.Expect.Type, u.GetBrowser().Type) {
 			fmt.Println(uacase.Ua)
 		}
 	}

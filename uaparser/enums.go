@@ -1,6 +1,6 @@
 package uaparser
 
-// type
+// UaItemType
 type UaItemType string
 
 const (
@@ -18,6 +18,7 @@ const (
 	UaMaxLength = 500
 )
 
+// fields
 const (
 	Major        = "major"
 	Model        = "model"
@@ -28,6 +29,7 @@ const (
 	Architecture = "architecture"
 )
 
+// device brand
 const (
 	AMAZON         = "Amazon"
 	APPLE          = "Apple"
@@ -64,6 +66,7 @@ const (
 	TCL            = "TCL"
 )
 
+// device type
 const (
 	MOBILE   = "mobile"  // 手机
 	TABLET   = "tablet"  // 平板
@@ -72,6 +75,13 @@ const (
 	WEARABLE = "wearable"
 	XR       = "xr"
 	EMBEDDED = "embedded"
+)
+
+// extensions
+const (
+	CLI     = "cli"
+	CRAWLER = "crawler"
+	FETCHER = "fetcher"
 )
 
 // old version to x.x.x
@@ -85,6 +95,7 @@ var safariMap = map[string]string{
 	"2.0.4": "/419",
 }
 
+// special windowsVersion
 var windowsVersionMap = map[string][]string{
 	"ME":      {"4.90"},
 	"NT 3.11": {"NT3.51"},
@@ -101,6 +112,7 @@ var windowsVersionMap = map[string][]string{
 
 var wildcardsType = map[string]string{"*": "mobile"}
 
+// itel special type
 var itelType = map[string][]string{
 	"tablet": {"p10001l", "w7001"},
 }
