@@ -54,6 +54,6 @@ fmt.Println(res.String()) // {"ua":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWeb
 
 - [regexp2](https://github.com/dlclark/regexp2): regexp2 - full featured regular expressions for Go.
 
-## Thinks
+## Thanks
 
 - [ua-parser-js](https://github.com/faisalman/ua-parser-js): UAParser.js - The Essential Web Development Tool for User-Agent Detection
